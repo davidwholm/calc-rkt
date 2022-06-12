@@ -6,7 +6,7 @@
 
 (provide parse)
 
-(define some-parser
+(define calc-parser
   (parser
    [start statements]
    [end EOF]
@@ -48,5 +48,5 @@
 
 (define (parse ip)
   (port-count-lines! ip)
-  (some-parser (λ ()
-                 (some-lexer ip))))
+  (calc-parser (λ ()
+                 (calc-lexer ip))))

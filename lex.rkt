@@ -3,7 +3,7 @@
 (require parser-tools/lex
          (prefix-in : parser-tools/lex-sre))
 
-(provide some-lexer
+(provide calc-lexer
          empty-tokens
          tokens)
 
@@ -17,7 +17,7 @@
                                        #\_)))]
   [%string (:: #\" (:* (:~ #\")) #\")])
 
-(define some-lexer
+(define calc-lexer
   (lexer-src-pos
    [#\+ (token-PLUS)]
    [#\- (token-MINUS)]
@@ -42,7 +42,7 @@
    [%number (token-NUMBER (string->number lexeme))]
    [%identifier (token-IDENTIFIER (string->symbol lexeme))]
    [%string (token-STRING (substring lexeme 1 (sub1 (string-length lexeme))))]
-   [whitespace (return-without-pos (some-lexer input-port))]
+   [whitespace (return-without-pos (calc-lexer input-port))]
    [(eof) (token-EOF)]
    [any-char (error 'lexer
                     "unrecognized character '~a' found on line ~a column ~a"
