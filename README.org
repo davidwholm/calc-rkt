@@ -3,8 +3,8 @@
 
 * Calc in Racket
 
-This is a simple tree-walking interpreter that can interpret files
-written in Racket.
+This is a simple tree-walking interpreter that can interpret files in
+a toy =calc= language.
 
 It uses the =parser-tools/{lex,lex-sre,yacc}= standard libraries for
 lexing and parsing respectively. Great stuff.
