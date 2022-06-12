@@ -1,0 +1,54 @@
+#+title: Calc in Racket
+#+author: David Holmqvist
+
+* Calc in Racket
+
+This is a simple tree-walking interpreter that can interpret files
+written in Racket.
+
+It uses the =parser-tools/{lex,lex-sre,yacc}= standard libraries for
+lexing and parsing respectively. Great stuff.
+
+Looking at =parse.rkt= should give a good indication of how to use the
+language.
+
+To run a file, run this from the command line:
+#+begin_src shell
+  $ racket main.rkt [file-to-interpret]
+#+end_src
+
+For example, the following:
+#+begin_example
+  a = 1;
+  b = 1;
+  limit = 150;
+
+  while b < limit {
+        println b;
+        tmp = b;
+        b = a + b;
+        a = tmp;
+
+        if b > limit {
+             print "Reached end of iteration with b = ";
+             println b;
+        }
+  }
+#+end_example
+
+yields:
+
+#+begin_example
+1
+2
+3
+5
+8
+13
+21
+34
+55
+89
+144
+Reached end of iteration with b = 233
+#+end_example
