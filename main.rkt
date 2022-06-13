@@ -4,13 +4,16 @@
          "interpret.rkt"
          "typecheck.rkt")
 
-(module+ main
-  (let* ([file-to-interpret (command-line
-                            #:program "calc"
-                            #:args (filename)
-                            filename)]
-         [ast (call-with-input-file file-to-interpret
-                (λ (in)
-                  (parse in)))])
+(define (interpret-file filename)
+  (let ([ast (call-with-input-file filename
+               (λ (in)
+                 (parse in)))])
     (typecheck ast)
     (interpret ast)))
+
+(module+ main
+  (let ([file-to-interpret (command-line
+                            #:program "calc"
+                            #:args (filename)
+                            filename)])
+    (interpret-file file-to-interpret)))

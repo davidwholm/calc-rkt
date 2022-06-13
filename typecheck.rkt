@@ -1,5 +1,7 @@
 #lang racket
 
+(require "scope.rkt")
+
 (provide typecheck)
 
 (define (typecheck-expr expr env)
@@ -35,27 +37,27 @@
                    (error 'typecheck-expr
                           "type error in '~a'" e)
                    'truth)]
-    [`(variable ,id) (hash-ref env id (λ ()
-                                        (error 'typecheck-expr
-                                               "unbound variable '~a'"
-                                               id)))]))
+    [`(variable ,id) (or (get-binding env id)
+                         (error 'typecheck-expr
+                                "unbound variable '~a'"
+                                id))]))
 
 (define (typecheck-stmt stmt env)
   (match stmt
     [`(print ,expr) (typecheck-expr expr env)]
     [`(println ,expr) (typecheck-expr expr env)]
-    [`(assign ,id ,expr) (hash-set! env id (typecheck-expr expr env))]
+    [`(assign ,id ,expr) (set-binding! env id (typecheck-expr expr env))]
     [`(if ,expr ,stmts1) (if (eq? (typecheck-expr expr env) 'truth)
-                             (typecheck stmts1 env)
+                             (typecheck stmts1 (enter-scope #:parent env))
                              (error 'typecheck-stmt
                                     "type error in '~a'"
                                     expr))]
     [`(while ,expr ,stmts1) (if (eq? (typecheck-expr expr env) 'truth)
-                                (typecheck stmts1 env)
+                                (typecheck stmts1 (enter-scope #:parent env))
                                 (error 'typecheck-stmt
                                        "type error in '~a'"
                                        expr))]))
 
-(define (typecheck stmts [env (make-hash)])
+(define (typecheck stmts [env (scope #f (make-hash))])
   (for ([stmt stmts])
     (typecheck-stmt stmt env)))
